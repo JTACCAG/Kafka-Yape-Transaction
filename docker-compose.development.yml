@@ -5,8 +5,11 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=jtaccag
+      - POSTGRES_DB=YapeTransaction
+      - POSTGRES_HOST=development_postgres
+      - POSTGRES_PORT=5432
   zookeeper:
     image: confluentinc/cp-zookeeper:5.5.3
     environment:
@@ -23,3 +26,8 @@ services:
       KAFKA_JMX_PORT: 9991
     ports:
       - 9092:9092
+networks:
+  default:
+    external: true
+    name: yape
+    driver: bridge
