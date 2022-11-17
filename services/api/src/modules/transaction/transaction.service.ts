@@ -1,9 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../user/entities/user.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { Transaction } from './entities/transaction.entity';
 
 @Injectable()
-export class TransactionService {
+export class TransactionService implements OnModuleInit {
+  constructor(
+    @InjectRepository(Transaction)
+    private transactionRepository: Repository<Transaction>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    @Inject('ANTIFRAUD')
+    private readonly clientKafka: ClientKafka,
+  ) {}
+
+  async onModuleInit() {
+    this.clientKafka.subscribeToResponseOf('antifraud');
+    await this.clientKafka.connect();
+  }
+
   create(createTransactionDto: CreateTransactionDto) {
     return 'This action adds a new transaction';
   }

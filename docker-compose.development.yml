@@ -1,21 +1,38 @@
 version: "3.7"
 services:
   postgres:
-    image: postgres:14
+    image: postgres
+    container_name: ${ENVIRON}_postgres
     ports:
-      - "5432:5432"
+      - "6543:5432"
     environment:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=jtaccag
       - POSTGRES_DB=YapeTransaction
       - POSTGRES_HOST=development_postgres
       - POSTGRES_PORT=5432
+
   zookeeper:
     image: confluentinc/cp-zookeeper:5.5.3
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ${ENVIRON}_pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=jtaccag@baumark.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    depends_on:
+      - 'postgres'
+    ports:
+      - 5050:80
+    links:
+      - 'postgres:postgres'
+
   kafka:
     image: confluentinc/cp-enterprise-kafka:5.5.3
+    container_name: ${ENVIRON}_kafka
     depends_on: [zookeeper]
     environment:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"

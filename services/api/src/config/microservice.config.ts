@@ -7,7 +7,8 @@ export const microserviceConfig: ClientsModuleOptions = [
     name: 'ANTIFRAUD',
     options: {
       client: {
-        brokers: ['kafka:29092'],
+        // brokers: ['kafka:29092'],
+        brokers: ['localhost:9092'],
       },
       consumer: {
         groupId: `user.${uuid()}`,
