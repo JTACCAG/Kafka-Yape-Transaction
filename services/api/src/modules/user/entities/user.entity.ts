@@ -1,9 +1,11 @@
+import { Transaction } from 'src/modules/transaction/entities/transaction.entity';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -30,4 +32,16 @@ export class User extends BaseEntity {
 
   @DeleteDateColumn({ type: 'timestamp', name: 'delete_at' })
   deleteAt: Date;
+
+  @OneToMany(
+    () => Transaction,
+    (transaction) => transaction.accountExternalIdCredit,
+  ) // note: we will create author property in the Photo class below
+  transactionsCredit: Transaction[];
+
+  @OneToMany(
+    () => Transaction,
+    (transaction) => transaction.accountExternalIdDebit,
+  ) // note: we will create author property in the Photo class below
+  transactionsDebit: Transaction[];
 }

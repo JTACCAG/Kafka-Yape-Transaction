@@ -1,24 +1,22 @@
-import { Controller, Logger } from '@nestjs/common';
-import { EventPattern, MessagePattern } from '@nestjs/microservices';
-import { from, Observable } from 'rxjs';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { TransactionService } from './transaction.service';
 
 @Controller()
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
   @MessagePattern('antifraud')
-  antifraud(message): Observable<number> {
-    console.log(message.max);
-    const numbers = [];
-    for (let i = 1; i <= message.max; i++) {
-      numbers.push(`i-${i}`);
-    }
-    console.log(numbers);
-    return from(numbers);
+  antifraud(@Payload() transaction): any {
+    return this.transactionService.antifraud(transaction);
   }
 
-  @EventPattern('antifraud.reply')
-  logReply(message): void {
-    Logger.log(message);
-  }
+  // @EventPattern('transaction_created')
+  // antifraud(transaction) {
+  //   this.transactionService.antifraud(transaction);
+  // }
+
+  // @EventPattern('antifraud.reply')
+  // logReply(message): void {
+  //   Logger.log(message);
+  // }
 }
